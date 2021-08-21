@@ -4,7 +4,7 @@ import time
 
 NODE_URL = "http://00fabf14.xym.stir-hosyu.com:3000"
 ADDRESS = "NAWZZXXNHUX6FQRARGO4VCX6M6HCCKUOYNILNVQ"
-ARD_PATH = '/dev/cu.usbserial-1140'
+ARD_PATH = '/dev/cu.usbserial-0001'
 SAVE_AMOUNT = 'amount.txt'
 
 
@@ -34,7 +34,7 @@ def calc_throw_amount(past_amount, xym_amount):
 
 
 def send_info(throw_amount):
-    with serial.Serial(ARD_PATH, 9600, timeout=10) as ser:
+    with serial.Serial(ARD_PATH, 115200, timeout=10) as ser:
         throw_amount = ('{}\n'.format(int(throw_amount)))
         byte_amount = throw_amount.encode('utf-8')
         ser.write(byte_amount)
@@ -50,7 +50,7 @@ def main():
         past_amount = get_past_amount()
         xym_amount = get_xym_amount()
         calc_throw_amount(past_amount, xym_amount)
-        # save_xym_amount(xym_amount)
+        save_xym_amount(xym_amount)
         time.sleep(15)
 
 
