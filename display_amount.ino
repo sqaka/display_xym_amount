@@ -4,8 +4,9 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+byte receive_data;
+char byte_amount[10];
 String str_amount;
-int str_len;
 int xym_amount;
 
 void setup()
@@ -16,13 +17,15 @@ void setup()
 
 void loop()
 {
-  // Serial.println('0');
-  while(Serial.available()) {
-    str_amount = Serial.readStringUntil('\n');
-    str_len = str_amount.length();
+  if (Serial.available() > 0) {
+    receive_data = Serial.readBytesUntil('\n', byte_amount, 5);
     
-    if (str_len > 0){
+    if (receive_data > 0) {
+      str_amount = String(byte_amount);
       xym_amount = str_amount.toInt();
+    }
+  
+    if (xym_amount > 0){
       lcd.backlight();
       lcd.display();
       lcd.setCursor(0, 0);
@@ -31,14 +34,15 @@ void loop()
       lcd.print(xym_amount);
       lcd.setCursor(12, 1);
       lcd.print("XYM");
-      
-      for(int i=0;i<5;i++){
+        
+      for(int i=0; i<5; i++) {
         lcd.noDisplay();
         delay(500);
         lcd.display();
         delay(1000);
-        }
-      lcd.clear(); 
+      }
+     lcd.clear();
+     Serial.flush();
     }
   }
 }
